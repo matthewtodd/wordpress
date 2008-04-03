@@ -1,4 +1,2 @@
-* TODO Wordpress::Cli should handle new installations
-* TODO Wordpress::Cli should handle upgrading existing installations
 * TODO after 'deploy:setup', 'deploy:wp_config'
 * TODO after 'deploy:finalize_update', 'deploy:wp_config:symlink'

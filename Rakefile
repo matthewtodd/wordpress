@@ -7,14 +7,17 @@ require 'wordpress'
 spec = Gem::Specification.new do |spec| 
   spec.name             = 'wordpress'
   spec.version          = Wordpress::VERSION
-  spec.summary          = ''
+  spec.summary          = 'Automates creating, upgrading and deploying a Wordpress installation.'
   spec.files            = FileList['README', 'TODO', 'bin/*', 'lib/**/*.rb', 'resources/*'].to_a
   spec.executables      = ['wordpress']
   spec.has_rdoc         = true
+  spec.rdoc_options     = ['--all']
   spec.extra_rdoc_files = FileList['README', 'TODO'].to_a
   spec.author           = 'Matthew Todd'
   spec.email            = 'matthew.todd@gmail.com'
   spec.homepage         = 'http://docs.matthewtodd.org/wordpress'
+  
+  spec.add_dependency     'capistrano', '>= 2.2.0'
 end
 
 Rake::GemReleaseTask.new(spec) do |task|

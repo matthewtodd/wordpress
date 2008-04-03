@@ -1,4 +1,4 @@
-module Wordpress
+module Wordpress #:nodoc:
   VERSION = '0.1.0'
 end
 

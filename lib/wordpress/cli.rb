@@ -17,18 +17,15 @@ module Wordpress
       system 'mkdir', '-p', tmp
       system 'tar', 'zxf', tarball, '--directory', tmp
 
-      system 'mkdir', '-p', base
-      chdir(base) do
-        create 'Capfile', <<-END
-          require 'rubygems'
-          require 'wordpress'
-          load 'wordpress/recipes/deploy'
+      directory(base) do
+        file 'Capfile', <<-END
+          %w( rubygems wordpress ).each { |lib| require lib }
+          load Gem.required_location('wordpress', 'wordpress/recipes/deploy.rb')
           load 'config/deploy'
         END
         
-        system 'mkdir', 'config'
-        chdir('config') do
-          create 'deploy.rb', <<-END
+        directory('config') do
+          file 'deploy.rb', <<-END
             set :application, "set your application name here"
             set :repository,  "set your repository location here"
 
@@ -45,8 +42,7 @@ module Wordpress
           END
         end
         
-        system 'mkdir', 'public'
-        chdir('public') do
+        directory('public') do
           system 'rm', '-r', *wordpress_files_to_delete if wordpress_files_to_delete.any?
           system 'cp', '-r', File.join(tmp, 'wordpress', '.'), '.'
         end
@@ -57,19 +53,20 @@ module Wordpress
     
     private
     
-    def chdir(path)
+    def directory(path)
+      system 'mkdir', '-p', path
       Dir.chdir(path) { yield }
     end
     
-    def create(path, contents)
+    def file(path, contents)
       indent = contents.scan(/^ +/m).first
       contents.gsub! /^#{indent}/, ''
       File.open(path, 'w') { |f| f.write(contents) } unless File.exists?(path)
     end
     
-    # TODO if you look at this, even though it reads like the Wordpress
-    # upgrade documentation, it's not particularly necessary now, is it?
     def wordpress_files_to_delete
+      # TODO if you look at this, even though it reads like the Wordpress
+      # upgrade documentation, it's not particularly necessary now, is it?
       # delete these
       files = %w( readme.html index.php wp.php xmlrpc.php license.txt )
       files += Dir.glob('wp-*.php')

@@ -3,4 +3,4 @@
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'wordpress'
 
-Wordpress::Cli.new(ARGV).run
+Wordpress::Cli.new(*ARGV).run

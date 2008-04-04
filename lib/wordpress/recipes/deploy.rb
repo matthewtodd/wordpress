@@ -2,7 +2,7 @@ require 'yaml'
 require 'capistrano/recipes/deploy/scm'
 require 'capistrano/recipes/deploy/strategy'
 
-def _cset(name, *args, &block)
+def _cset(name, *args, &block) #:nodoc:
   unless exists?(name)
     set(name, *args, &block)
   end
@@ -72,7 +72,7 @@ _cset(:latest_release) { exists?(:deploy_timestamped) ? release_path : current_r
 
 # Auxiliary helper method for the `deploy:check' task. Lets you set up your
 # own dependencies.
-def depend(location, type, *args)
+def depend(location, type, *args) #:nodoc:
   deps = fetch(:dependencies, {})
   deps[location] ||= {}
   deps[location][type] ||= []
@@ -82,7 +82,7 @@ end
 
 # Temporarily sets an environment variable, yields to a block, and restores
 # the value when it is done.
-def with_env(name, value)
+def with_env(name, value) #:nodoc:
   saved, ENV[name] = ENV[name], value
   yield
 ensure

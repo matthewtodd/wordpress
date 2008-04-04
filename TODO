@@ -1,2 +1,4 @@
 * TODO after 'deploy:setup', 'deploy:wp_config'
 * TODO after 'deploy:finalize_update', 'deploy:wp_config:symlink'
+* TODO database backup (and restore?) recipe
+* TODO disable (and re-enable?) plugins recipe?

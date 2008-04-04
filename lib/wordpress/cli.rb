@@ -1,14 +1,33 @@
 require 'tmpdir'
 
 module Wordpress
+  # ==Introduction
+  # Creates a new Wordpress application with a default directory structure and
+  # configuration at the path specified.
+  #
+  # May also be used to upgrade an existing Wordpress application.
+  #
+  # Generally aims to be well-behaved, but it's still wise to upgrade locally
+  # using good version control (so you can, for example, <tt>git reset --hard
+  # && git clean -fd</tt>) and then {back up your database and disable any
+  # plugins}[http://codex.wordpress.org/Upgrading_WordPress_Extended] before
+  # deploying.
+  #
+  # Currently uses Wordpress 2.5.
+  #
+  # ==Installation
+  #  gem install wordpress --source http://gems.matthewtodd.org
+  #
+  # ==Usage
+  #  wordpress /path/to/your/app
   class Cli
     attr_reader :base, :tmp, :tarball
     
-    def initialize(args)
-      abort "Please specify the directory set up, e.g. #{File.basename($0)} ." if args.empty?
-      abort 'Too many arguments; please specify only the directory to set up.' if args.length > 1
+    def initialize(*argv)
+      abort "Please specify the directory set up, e.g. #{File.basename($0)} ." if argv.empty?
+      abort 'Too many arguments; please specify only the directory to set up.' if argv.length > 1
       
-      @base    = args.shift
+      @base    = argv.shift
       @tmp     = File.join(Dir.tmpdir, "wordpress.#{Process.pid}")
       @tarball = File.join(File.dirname(__FILE__), '..', '..', 'resources', 'wordpress-2.5.tar.gz')
     end
@@ -43,7 +62,7 @@ module Wordpress
         end
         
         directory('public') do
-          system 'rm', '-r', *wordpress_files_to_delete if wordpress_files_to_delete.any?
+          system 'rm', '-r', *wordpress_files if wordpress_files.any?
           system 'cp', '-r', File.join(tmp, 'wordpress', '.'), '.'
         end
       end
@@ -64,7 +83,7 @@ module Wordpress
       File.open(path, 'w') { |f| f.write(contents) } unless File.exists?(path)
     end
     
-    def wordpress_files_to_delete
+    def wordpress_files
       # TODO if you look at this, even though it reads like the Wordpress
       # upgrade documentation, it's not particularly necessary now, is it?
       # delete these

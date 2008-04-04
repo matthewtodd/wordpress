@@ -1,3 +1,8 @@
+# =========================================================================
+# This file started as a direct copy of capistrano/recipes/deploy.
+# Thanks so much for Capistrano, Jamis!
+# =========================================================================
+
 require 'yaml'
 require 'capistrano/recipes/deploy/scm'
 require 'capistrano/recipes/deploy/strategy'
@@ -13,8 +18,10 @@ end
 # the deploy will fail with an error.
 # =========================================================================
 
-_cset(:application) { abort "Please specify the name of your application, set :application, 'foo'" }
-_cset(:repository)  { abort "Please specify the repository that houses your application's code, set :repository, 'foo'" }
+_cset(:application)       { abort "Please specify the name of your application, set :application, 'foo'" }
+_cset(:repository)        { abort "Please specify the repository that houses your application's code, set :repository, 'foo'" }
+_cset(:database_name)     { abort "Please specify the name of your Wordpress database, set :database_name, 'foo'" }
+_cset(:database_username) { abort "Please specify the username for your Wordpress database, set :database_username, 'foo'" }
 
 # =========================================================================
 # These variables may be set in the client capfile if their default values
@@ -58,6 +65,8 @@ _cset(:latest_revision)   { capture("cat #{current_release}/REVISION").chomp }
 _cset(:previous_revision) { capture("cat #{previous_release}/REVISION").chomp }
 
 _cset(:run_method)        { fetch(:use_sudo, true) ? :sudo : :run }
+
+_cset(:database_password) { Capistrano::CLI.password_prompt("Please enter the database password for #{database_username} on #{database_name}: ") }
 
 # some tasks, like symlink, need to always point at the latest release, but
 # they can also (occassionally) be called standalone. In the standalone case,
@@ -123,8 +132,15 @@ namespace :deploy do
   DESC
   task :setup, :except => { :no_release => true } do
     dirs = [deploy_to, releases_path, shared_path]
-    dirs += %w(uploads).map { |d| File.join(shared_path, d) }
+    dirs += %w(backups uploads).map { |d| File.join(shared_path, d) }
     run "umask 02 && mkdir -p #{dirs.join(' ')}"
+    
+    restore_script = <<-END.gsub(/^ */, '')
+      #!/bin/sh
+      gzcat $1 | mysql -u #{database_username} -p #{database}
+    END
+    
+    put restore_script, "#{shared_path}/backups/restore", :mode => 0755
   end
 
   desc <<-DESC
@@ -189,6 +205,34 @@ namespace :deploy do
     end
   end
 
+  namespace :database do
+    desc <<-DESC
+      Backup the database. This is HIGHLY recommended before upgrading \
+      Wordpress.
+      
+      Backups may be restored manually by running
+        \#{shared_path}/backups/restore filename.sql.gz.
+    DESC
+    task :backup do
+      run "mysqldump -u #{database_username} -p#{database_password} --compress --opt --lock-tables=false --skip-add-locks --skip-extended-insert #{database_name} | gzip > #{shared_path}/backups/#{release_name}.sql.gz"
+    end
+  end
+  
+  namespace :plugins do
+    desc 'Disable all plugins.'
+    task :disable do
+      run "mysql -u #{database_username} -p#{database_password} -e 'update wp_options set option_value=\"a:0:{}\" where option_name=\"active_plugins\"' #{database_name}"
+    end
+  end
+  
+  desc 'Backup the database, disable all plugins, and deploy.'
+  task :upgrade do
+    database.backup
+    plugins.disable
+    deploy.default
+    puts 'You should now visit wp-admin/upgrade.php and manually reactivate your plugins.'
+  end
+  
   desc <<-DESC
     Clean up old releases. By default, the last 5 releases are kept on each \
     server (though you can change this with the keep_releases variable). All \

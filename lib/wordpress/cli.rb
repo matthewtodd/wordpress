@@ -9,9 +9,10 @@ module Wordpress
   #
   # Generally aims to be well-behaved, but it's still wise to upgrade locally
   # using good version control (so you can, for example, <tt>git reset --hard
-  # && git clean -fd</tt>) and then {back up your database and disable any
-  # plugins}[http://codex.wordpress.org/Upgrading_WordPress_Extended] before
-  # deploying.
+  # && git clean -fd</tt>). After upgrading locally, it's best to deploy using
+  # <tt>deploy:upgrade</tt>, which will backup your database and disable your
+  # plugins before deploying normally, {as
+  # recommended}[http://codex.wordpress.org/Upgrading_WordPress_Extended].
   #
   # Currently uses Wordpress 2.5.
   #

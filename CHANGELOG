@@ -1,3 +1,9 @@
+== 0.2.0
+
+* Task <tt>deploy:database:backup</tt> to backup database into <tt>#{shared_path}/backups</tt>, along with <tt>restore</tt> script
+* Task <tt>deploy:plugins:disable</tt> to disable all active plugins (useful before an upgrade)
+* Task <tt>deploy:upgrade</tt> to backup database and disable plugins before deploying with an upgraded version of Wordpress
+
 == 0.1.1
 
 * Fledgling documentation.

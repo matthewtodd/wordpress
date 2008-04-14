@@ -44,8 +44,6 @@ module Wordpress
         END
         
         directory('config') do
-          symlink '../public/wp-config.php'
-          
           file 'boot.rb', <<-END
             %w( rubygems wordpress ).each { |lib| require lib }
             WORDPRESS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
@@ -141,13 +139,19 @@ module Wordpress
               ""              =>      "application/octet-stream",
              )
           END
+          
+          require 'digest/sha1'
+          file 'wp-config.php', Wordpress.config(:db_name     => File.basename(base),
+                                                 :db_user     => 'root',
+                                                 :db_password => '',
+                                                 :secret_key  => Digest::SHA1.hexdigest(rand.to_s),
+                                                 :abspath     => '/../public/')
         end
         
         directory('public') do
           system 'rm', '-r', *wordpress_files if wordpress_files.any?
           system 'cp', '-r', File.join(tmp, 'wordpress', '.'), '.'
-          require 'digest/sha1'
-          file 'wp-config.php', Wordpress.config(:db_name => File.basename(base), :db_user => 'root', :db_password => '', :secret_key => Digest::SHA1.hexdigest(rand.to_s))
+          symlink '../config/wp-config.php'
         end
         
         directory('script') do

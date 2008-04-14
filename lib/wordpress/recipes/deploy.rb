@@ -152,7 +152,7 @@ namespace :deploy do
     task :restore, :except => { :no_release => true } do
       put <<-END.gsub(/^ */, ''), "#{shared_path}/backups/restore", :mode => 0755
         #!/bin/sh
-        gzcat $1 | mysql -u #{database_username} -p #{database}
+        gzcat $1 | mysql -u #{database_username} -p #{database_name}
       END
     end
     
@@ -161,7 +161,7 @@ namespace :deploy do
     DESC
     task :config, :except => { :no_release => true } do
       require 'digest/sha1'
-      wp_config = Wordpress.config(:db_name     => database,
+      wp_config = Wordpress.config(:db_name     => database_name,
                                    :db_user     => database_username,
                                    :db_password => database_password,
                                    :secret_key  => Digest::SHA1.hexdigest(rand.to_s),

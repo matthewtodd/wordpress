@@ -1,9 +1,9 @@
 == 0.3.0
 
-* Command wordpress sets up script/server using config/lighttpd.conf
-* Command worpdress creates a default config/wp-config.php and symlinks it in public
-* Task <tt>deploy:setup:config</tt> creates shared wp-config.php
-* Task <tt>deploy:finalize_update:config</tt> symlinks to shared wp-config.php
+* Command <tt>wordpress</tt> sets up <tt>script/server</tt> using <tt>config/lighttpd.conf</tt>.
+* Command <tt>wordpress</tt> creates a default <tt>config/wp-config.php</tt> and symlinks it in <tt>public</tt>.
+* Task <tt>deploy:setup:config</tt> creates shared <tt>wp-config.php</tt>.
+* Task <tt>deploy:finalize_update:config</tt> symlinks to shared <tt>wp-config.php</tt>.
 
 == 0.2.0
 

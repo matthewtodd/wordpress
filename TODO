@@ -1,3 +1,4 @@
+* TODO support copying "production" data into local database
 * TODO wordpress cli could take arguments to pass in creating initial wp-config.php
 * TODO wordpress cli should handle -h --help to show usage
 * TODO wordpress cli should handle -f --force to force file creation

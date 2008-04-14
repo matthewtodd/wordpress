@@ -161,7 +161,12 @@ namespace :deploy do
     DESC
     task :config, :except => { :no_release => true } do
       require 'digest/sha1'
-      wp_config = Wordpress.config(:db_name => database, :db_user => database_username, :db_password => database_password, :secret_key => Digest::SHA1.hexdigest(rand.to_s))
+      wp_config = Wordpress.config(:db_name     => database,
+                                   :db_user     => database_username,
+                                   :db_password => database_password,
+                                   :secret_key  => Digest::SHA1.hexdigest(rand.to_s),
+                                   :abspath     => '/../current/public/')
+
       put wp_config, "#{shared_path}/wp-config.php", :mode => 0600
     end
   end
@@ -217,13 +222,12 @@ namespace :deploy do
     end
     
     desc <<-DESC
-      [internal] Hardlinks the shared wp-config.php into the release. Wordpress
-      got confused by a symlink, probably due to broken relative paths.
+      [internal] Symlinks the shared wp-config.php into the release.
     DESC
     task :config, :except => { :no_release => true } do
       run <<-CMD
-        rm -rf #{latest_release}/public/wp-config.php &&
-        ln #{shared_path}/wp-config.php #{latest_release}/public/wp-config.php
+        rm -f #{latest_release}/public/wp-config.php &&
+        ln -s #{shared_path}/wp-config.php #{latest_release}/public/wp-config.php
       CMD
     end
   end

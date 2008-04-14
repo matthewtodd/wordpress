@@ -3,7 +3,7 @@
 * Command wordpress sets up script/server using config/lighttpd.conf
 * Command worpdress creates a default config/wp-config.php and symlinks it in public
 * Task <tt>deploy:setup:config</tt> creates shared wp-config.php
-* Task <tt>deploy:finalize_update:config</tt> hardlinks to shared wp-config.php
+* Task <tt>deploy:finalize_update:config</tt> symlinks to shared wp-config.php
 
 == 0.2.0
 

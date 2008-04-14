@@ -28,7 +28,7 @@ module Wordpress
       abort "Please specify the directory set up, e.g. #{File.basename($0)} ." if argv.empty?
       abort 'Too many arguments; please specify only the directory to set up.' if argv.length > 1
       
-      @base    = argv.shift
+      @base    = File.expand_path(argv.shift)
       @tmp     = File.join(Dir.tmpdir, "wordpress.#{Process.pid}")
     end
     
@@ -44,6 +44,11 @@ module Wordpress
         END
         
         directory('config') do
+          file 'boot.rb', <<-END
+            %w( rubygems wordpress ).each { |lib| require lib }
+            WORDPRESS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+          END
+          
           file 'deploy.rb', <<-END
             set :application, "set your application name here"
             set :repository,  "set your repository location here"
@@ -59,11 +64,94 @@ module Wordpress
 
             server "your server here", :web, :app, :db, :primary => true
           END
+          
+          file 'lighttpd.conf', <<-END
+            server.port = 3000
+            
+            var.root                 = env.WORDPRESS_ROOT
+            server.document-root     = var.root + "/public"
+            index-file.names         = ( "index.php" )
+            server.error-handler-404 = "/index.php"
+
+            include "lighttpd-mimetypes.conf"
+            
+            server.modules = ( "mod_fastcgi" )
+            fastcgi.server = ( ".php" => (( 
+                                 "bin-path" => env.PHP_FASTCGI,
+                                 "socket"   => var.root + "/tmp/php.socket"
+                             )))
+            END
+          
+          file 'lighttpd-mimetypes.conf', <<-END
+            mimetype.assign             = (
+              ".pdf"          =>      "application/pdf",
+              ".sig"          =>      "application/pgp-signature",
+              ".spl"          =>      "application/futuresplash",
+              ".class"        =>      "application/octet-stream",
+              ".ps"           =>      "application/postscript",
+              ".torrent"      =>      "application/x-bittorrent",
+              ".dvi"          =>      "application/x-dvi",
+              ".gz"           =>      "application/x-gzip",
+              ".pac"          =>      "application/x-ns-proxy-autoconfig",
+              ".swf"          =>      "application/x-shockwave-flash",
+              ".tar.gz"       =>      "application/x-tgz",
+              ".tgz"          =>      "application/x-tgz",
+              ".tar"          =>      "application/x-tar",
+              ".zip"          =>      "application/zip",
+              ".mp3"          =>      "audio/mpeg",
+              ".m3u"          =>      "audio/x-mpegurl",
+              ".wma"          =>      "audio/x-ms-wma",
+              ".wax"          =>      "audio/x-ms-wax",
+              ".ogg"          =>      "application/ogg",
+              ".wav"          =>      "audio/x-wav",
+              ".gif"          =>      "image/gif",
+              ".jpg"          =>      "image/jpeg",
+              ".jpeg"         =>      "image/jpeg",
+              ".png"          =>      "image/png",
+              ".xbm"          =>      "image/x-xbitmap",
+              ".xpm"          =>      "image/x-xpixmap",
+              ".xwd"          =>      "image/x-xwindowdump",
+              ".css"          =>      "text/css",
+              ".html"         =>      "text/html",
+              ".htm"          =>      "text/html",
+              ".js"           =>      "text/javascript",
+              ".asc"          =>      "text/plain",
+              ".c"            =>      "text/plain",
+              ".cpp"          =>      "text/plain",
+              ".log"          =>      "text/plain",
+              ".conf"         =>      "text/plain",
+              ".text"         =>      "text/plain",
+              ".txt"          =>      "text/plain",
+              ".dtd"          =>      "text/xml",
+              ".xml"          =>      "text/xml",
+              ".mpeg"         =>      "video/mpeg",
+              ".mpg"          =>      "video/mpeg",
+              ".mov"          =>      "video/quicktime",
+              ".qt"           =>      "video/quicktime",
+              ".avi"          =>      "video/x-msvideo",
+              ".asf"          =>      "video/x-ms-asf",
+              ".asx"          =>      "video/x-ms-asf",
+              ".wmv"          =>      "video/x-ms-wmv",
+              ".bz2"          =>      "application/x-bzip",
+              ".tbz"          =>      "application/x-bzip-compressed-tar",
+              ".tar.bz2"      =>      "application/x-bzip-compressed-tar",
+              # default mime type
+              ""              =>      "application/octet-stream",
+             )
+          END
         end
         
         directory('public') do
           system 'rm', '-r', *wordpress_files if wordpress_files.any?
           system 'cp', '-r', File.join(tmp, 'wordpress', '.'), '.'
+        end
+        
+        directory('script') do
+          file 'server', <<-END, :mode => 0755
+            #!/usr/bin/env ruby
+            require File.join(File.dirname(__FILE__), '..', 'config', 'boot')
+            require 'wordpress/servers/lighttpd'
+          END
         end
       end
 
@@ -77,10 +165,11 @@ module Wordpress
       Dir.chdir(path) { yield }
     end
     
-    def file(path, contents)
+    def file(path, contents, options={})
       indent = contents.scan(/^ +/m).first
       contents.gsub! /^#{indent}/, ''
       File.open(path, 'w') { |f| f.write(contents) } unless File.exists?(path)
+      File.chmod(options[:mode], path) if options[:mode]
     end
     
     def wordpress_files

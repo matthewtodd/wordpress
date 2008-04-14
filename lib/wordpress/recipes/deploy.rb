@@ -118,29 +118,42 @@ namespace :deploy do
     end
   end
 
-  desc <<-DESC
-    Prepares one or more servers for deployment. Before you can use any \
-    of the Capistrano deployment tasks with your project, you will need to \
-    make sure all of your servers have been prepared with `cap deploy:setup'. When \
-    you add a new server to your cluster, you can easily run the setup task \
-    on just that server by specifying the HOSTS environment variable:
+  namespace :setup do
+    desc <<-DESC
+      Prepares one or more servers for deployment. Before you can use any \
+      of the Capistrano deployment tasks with your project, you will need to \
+      make sure all of your servers have been prepared with `cap deploy:setup'. When \
+      you add a new server to your cluster, you can easily run the setup task \
+      on just that server by specifying the HOSTS environment variable:
 
-      $ cap HOSTS=new.server.com deploy:setup
+        $ cap HOSTS=new.server.com deploy:setup
 
-    It is safe to run this task on servers that have already been set up; it \
-    will not destroy any deployed revisions or data.
-  DESC
-  task :setup, :except => { :no_release => true } do
-    dirs = [deploy_to, releases_path, shared_path]
-    dirs += %w(backups uploads).map { |d| File.join(shared_path, d) }
-    run "umask 02 && mkdir -p #{dirs.join(' ')}"
+      It is safe to run this task on servers that have already been set up; it \
+      will not destroy any deployed revisions or data.
+    DESC
+    task :default, :except => { :no_release => true } do
+      directories
+      restore
+    end
+
+    desc <<-DESC
+      [internal] Creates deployment directories.
+    DESC
+    task :directories, :except => { :no_release => true } do
+      dirs = [deploy_to, releases_path, shared_path]
+      dirs += %w(backups uploads).map { |d| File.join(shared_path, d) }
+      run "umask 02 && mkdir -p #{dirs.join(' ')}"
+    end
     
-    restore_script = <<-END.gsub(/^ */, '')
-      #!/bin/sh
-      gzcat $1 | mysql -u #{database_username} -p #{database}
-    END
-    
-    put restore_script, "#{shared_path}/backups/restore", :mode => 0755
+    desc <<-DESC
+      [internal] Writes a script to restore a database backup.
+    DESC
+    task :restore, :except => { :no_release => true } do
+      put <<-END.gsub(/^ */, ''), "#{shared_path}/backups/restore", :mode => 0755
+        #!/bin/sh
+        gzcat $1 | mysql -u #{database_username} -p #{database}
+      END
+    end
   end
 
   desc <<-DESC
@@ -161,21 +174,36 @@ namespace :deploy do
     finalize_update
   end
 
-  desc <<-DESC
-    [internal] Touches up the released code. This is called by update_code \
-    after the basic deploy finishes.
+  namespace :finalize_update do
+    desc <<-DESC
+      [internal] Touches up the released code. This is called by update_code \
+      after the basic deploy finishes.
 
-    This task will make the release group-writable (if the :group_writable \
-    variable is set to true, which is the default). It will then set up \
-    symlinks to the shared directory for the uploads directory.
-  DESC
-  task :finalize_update, :except => { :no_release => true } do
-    run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
-
-    run <<-CMD
-      rm -rf #{latest_release}/public/wp-content/uploads &&
-      ln -s #{shared_path}/uploads #{latest_release}/public/wp-content/uploads
-    CMD
+      This task will make the release group-writable (if the :group_writable \
+      variable is set to true, which is the default). It will then set up \
+      symlinks to the shared directory for the uploads directory.
+    DESC
+    task :default, :except => { :no_release => true } do
+      chmod
+      symlink_shared_paths
+    end
+    
+    desc <<-DESC
+      [internal] Makes the release group writable, if desired.
+    DESC
+    task :chmod, :except => { :no_release => true } do
+      run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)      
+    end
+    
+    desc <<-DESC
+      [internal] Symlinks shared paths, like uploads, into the release.
+    DESC
+    task :symlink_shared_paths, :except => { :no_release => true } do
+      run <<-CMD
+        rm -rf #{latest_release}/public/wp-content/uploads &&
+        ln -s #{shared_path}/uploads #{latest_release}/public/wp-content/uploads
+      CMD
+    end
   end
 
   desc <<-DESC

@@ -1,0 +1,2 @@
+* TODO wordpress cli should handle -h --help to show usage
+* TODO wordpress cli should handle -f --force to force file creation

@@ -1,3 +1,8 @@
+== 0.3.0
+
+* Task <tt>deploy:setup:config</tt> creates shared wp-config.php
+* Task <tt>deploy:finalize_update:config</tt> hardlinks to shared wp-config.php
+
 == 0.2.0
 
 * Task <tt>deploy:database:backup</tt> to backup database into <tt>#{shared_path}/backups</tt>, along with <tt>restore</tt> script

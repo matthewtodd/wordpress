@@ -1,2 +1,0 @@
-* TODO after 'deploy:setup', 'deploy:wp_config'
-* TODO after 'deploy:finalize_update', 'deploy:wp_config:symlink'

@@ -22,7 +22,7 @@ module Wordpress
   # ==Usage
   #  wordpress /path/to/your/app
   class Cli
-    attr_reader :base, :tmp, :tarball
+    attr_reader :base, :tmp
     
     def initialize(*argv)
       abort "Please specify the directory set up, e.g. #{File.basename($0)} ." if argv.empty?
@@ -30,12 +30,11 @@ module Wordpress
       
       @base    = argv.shift
       @tmp     = File.join(Dir.tmpdir, "wordpress.#{Process.pid}")
-      @tarball = File.join(File.dirname(__FILE__), '..', '..', 'resources', 'wordpress-2.5.tar.gz')
     end
     
     def run
       system 'mkdir', '-p', tmp
-      system 'tar', 'zxf', tarball, '--directory', tmp
+      system 'tar', 'zxf', Wordpress::TARBALL, '--directory', tmp
 
       directory(base) do
         file 'Capfile', <<-END

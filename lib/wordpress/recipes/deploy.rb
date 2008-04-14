@@ -134,6 +134,7 @@ namespace :deploy do
     task :default, :except => { :no_release => true } do
       directories
       restore
+      config
     end
 
     desc <<-DESC
@@ -153,6 +154,15 @@ namespace :deploy do
         #!/bin/sh
         gzcat $1 | mysql -u #{database_username} -p #{database}
       END
+    end
+    
+    desc <<-DESC
+      Creates a shared wp-config.php.
+    DESC
+    task :config, :except => { :no_release => true } do
+      require 'digest/sha1'
+      wp_config = Wordpress.config(:db_name => database, :db_user => database_username, :db_password => database_password, :secret_key => Digest::SHA1.hexdigest(rand.to_s))
+      put wp_config, "#{shared_path}/wp-config.php", :mode => 0600
     end
   end
 

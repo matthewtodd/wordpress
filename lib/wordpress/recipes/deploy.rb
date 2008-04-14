@@ -196,6 +196,7 @@ namespace :deploy do
     task :default, :except => { :no_release => true } do
       chmod
       symlink_shared_paths
+      config
     end
     
     desc <<-DESC
@@ -212,6 +213,17 @@ namespace :deploy do
       run <<-CMD
         rm -rf #{latest_release}/public/wp-content/uploads &&
         ln -s #{shared_path}/uploads #{latest_release}/public/wp-content/uploads
+      CMD
+    end
+    
+    desc <<-DESC
+      [internal] Hardlinks the shared wp-config.php into the release. Wordpress
+      got confused by a symlink, probably due to broken relative paths.
+    DESC
+    task :config, :except => { :no_release => true } do
+      run <<-CMD
+        rm -rf #{latest_release}/public/wp-config.php &&
+        ln #{shared_path}/wp-config.php #{latest_release}/public/wp-config.php
       CMD
     end
   end

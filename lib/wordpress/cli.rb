@@ -44,6 +44,8 @@ module Wordpress
         END
         
         directory('config') do
+          symlink '../public/wp-config.php'
+          
           file 'boot.rb', <<-END
             %w( rubygems wordpress ).each { |lib| require lib }
             WORDPRESS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
@@ -144,6 +146,8 @@ module Wordpress
         directory('public') do
           system 'rm', '-r', *wordpress_files if wordpress_files.any?
           system 'cp', '-r', File.join(tmp, 'wordpress', '.'), '.'
+          require 'digest/sha1'
+          file 'wp-config.php', Wordpress.config(:db_name => File.basename(base), :db_user => 'root', :db_password => '', :secret_key => Digest::SHA1.hexdigest(rand.to_s))
         end
         
         directory('script') do
@@ -170,6 +174,11 @@ module Wordpress
       contents.gsub! /^#{indent}/, ''
       File.open(path, 'w') { |f| f.write(contents) } unless File.exists?(path)
       File.chmod(options[:mode], path) if options[:mode]
+    end
+    
+    def symlink(file)
+      system 'rm', File.basename(file) if File.exists?(File.basename(file))
+      system 'ln', '-s', file
     end
     
     def wordpress_files

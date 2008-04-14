@@ -1,3 +1,7 @@
+== 0.3.1
+
+* Command <tt>wordpress</tt> only creates <tt>config/wp-config-sample.php</tt>. You'll need to do the rest.
+
 == 0.3.0
 
 * Command <tt>wordpress</tt> sets up <tt>script/server</tt> using <tt>config/lighttpd.conf</tt>.

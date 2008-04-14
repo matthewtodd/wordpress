@@ -1,3 +1,4 @@
+require 'digest/sha1'
 require 'tmpdir'
 
 module Wordpress
@@ -140,17 +141,17 @@ module Wordpress
              )
           END
           
-          require 'digest/sha1'
-          file 'wp-config.php', Wordpress.config(:db_name     => File.basename(base),
-                                                 :db_user     => 'root',
-                                                 :db_password => '',
-                                                 :secret_key  => Digest::SHA1.hexdigest(rand.to_s),
-                                                 :abspath     => '/../public/')
+          file 'wp-config-sample.php', Wordpress.config(:db_name     => File.basename(base),
+                                                        :db_user     => 'root',
+                                                        :db_password => '',
+                                                        :secret_key  => Digest::SHA1.hexdigest(rand.to_s),
+                                                        :abspath     => '/../public/')
         end
         
         directory('public') do
           system 'rm', '-r', *wordpress_files if wordpress_files.any?
           system 'cp', '-r', File.join(tmp, 'wordpress', '.'), '.'
+          system 'rm', 'wp-config-sample.php'
           symlink '../config/wp-config.php'
         end
         

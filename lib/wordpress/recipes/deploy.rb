@@ -208,7 +208,7 @@ namespace :deploy do
       [internal] Makes the release group writable, if desired.
     DESC
     task :chmod, :except => { :no_release => true } do
-      run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)      
+      run "chmod -fR g+w #{latest_release}" if fetch(:group_writable, true)
     end
     
     desc <<-DESC

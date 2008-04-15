@@ -1,6 +1,7 @@
 == 0.3.1
 
 * BUGFIX Recipe <tt>update_code</tt> failed to call <tt>finalize_update</tt> once it became a namespace.
+* BUGFIX Prevent chmod from complaining about symbolic links.
 * Command <tt>wordpress</tt> only creates <tt>config/wp-config-sample.php</tt>. You'll need to do the rest.
 
 == 0.3.0

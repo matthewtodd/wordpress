@@ -1,3 +1,7 @@
+== 0.3.2
+
+* 
+
 == 0.3.1
 
 * BUGFIX Recipe <tt>update_code</tt> failed to call <tt>finalize_update</tt> once it became a namespace.

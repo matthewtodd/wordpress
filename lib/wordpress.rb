@@ -1,6 +1,6 @@
 module Wordpress #:nodoc:
   TARBALL = File.join(File.dirname(__FILE__), '..', 'resources', 'wordpress-2.5.tar.gz')
-  VERSION = '0.3.2'
+  VERSION = '0.3.1'
   
   def self.config(options={})
     config = `tar zxfO #{TARBALL} 'wordpress/wp-config-sample.php'`

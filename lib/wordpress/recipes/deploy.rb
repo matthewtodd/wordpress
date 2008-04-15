@@ -186,7 +186,7 @@ namespace :deploy do
   task :update_code, :except => { :no_release => true } do
     on_rollback { run "rm -rf #{release_path}; true" }
     strategy.deploy!
-    finalize_update
+    finalize_update.default
   end
 
   namespace :finalize_update do

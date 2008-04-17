@@ -138,11 +138,14 @@ module Wordpress
              )
           END
           
-          file 'wp-config-sample.php', Wordpress.config(:db_name     => File.basename(base),
-                                                        :db_user     => 'root',
-                                                        :db_password => '',
-                                                        :secret_key  => Digest::SHA1.hexdigest(rand.to_s),
-                                                        :abspath     => '/../public/')
+          config = Wordpress.config(:db_name     => File.basename(base),
+                                    :db_user     => 'root',
+                                    :db_password => '',
+                                    :secret_key  => Digest::SHA1.hexdigest(rand.to_s),
+                                    :abspath     => '/../public/')
+
+          file 'wp-config.php', config
+          file 'wp-config-sample.php', config
         end
         
         directory('public') do

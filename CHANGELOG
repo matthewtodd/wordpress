@@ -2,6 +2,7 @@
 
 * Renamed wordpress -> wordpressify.
 * Extracted wordpress tarball to separate wordpress-release gem.
+* Added placeholders for required database parameters to generated deploy.rb.
 
 == 0.3.1
 

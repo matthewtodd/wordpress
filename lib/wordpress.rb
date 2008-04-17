@@ -1,3 +1,5 @@
+require 'wordpress/release'
+
 module Wordpress #:nodoc:
   VERSION = '0.4.0'
   

@@ -1,5 +1,4 @@
 require 'digest/sha1'
-require 'wordpress/release'
 
 module Wordpress
   # ==Introduction

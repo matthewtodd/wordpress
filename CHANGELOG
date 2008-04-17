@@ -1,6 +1,7 @@
 == 0.4.0
 
 * Renamed wordpress -> wordpressify.
+* Extracted wordpress tarball to separate wordpress-release gem.
 
 == 0.3.1
 

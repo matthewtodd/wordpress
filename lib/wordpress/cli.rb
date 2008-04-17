@@ -1,5 +1,5 @@
 require 'digest/sha1'
-require 'tmpdir'
+require 'wordpress/release'
 
 module Wordpress
   # ==Introduction
@@ -23,20 +23,15 @@ module Wordpress
   # ==Usage
   #  wordpress /path/to/your/app
   class Cli
-    attr_reader :base, :tmp
+    attr_reader :base
     
     def initialize(*argv)
       abort "Please specify the directory set up, e.g. #{File.basename($0)} ." if argv.empty?
       abort 'Too many arguments; please specify only the directory to set up.' if argv.length > 1
-      
-      @base    = File.expand_path(argv.shift)
-      @tmp     = File.join(Dir.tmpdir, "wordpress.#{Process.pid}")
+      @base = File.expand_path(argv.shift)
     end
     
     def run
-      system 'mkdir', '-p', tmp
-      system 'tar', 'zxf', Wordpress::TARBALL, '--directory', tmp
-
       directory(base) do
         file 'Capfile', <<-END
           %w( rubygems wordpress ).each { |lib| require lib }
@@ -149,8 +144,7 @@ module Wordpress
         end
         
         directory('public') do
-          system 'rm', '-r', *wordpress_files if wordpress_files.any?
-          system 'cp', '-r', File.join(tmp, 'wordpress', '.'), '.'
+          Wordpress.release.upgrade
           system 'rm', 'wp-config-sample.php'
           symlink '../config/wp-config.php'
         end
@@ -163,8 +157,6 @@ module Wordpress
           END
         end
       end
-
-      system 'rm', '-r', tmp
     end
     
     private
@@ -182,30 +174,7 @@ module Wordpress
     end
     
     def symlink(file)
-      system 'rm', File.basename(file) if File.exists?(File.basename(file))
-      system 'ln', '-s', file
-    end
-    
-    def wordpress_files
-      # TODO if you look at this, even though it reads like the Wordpress
-      # upgrade documentation, it's not particularly necessary now, is it?
-      # delete these
-      files = %w( readme.html index.php wp.php xmlrpc.php license.txt )
-      files += Dir.glob('wp-*.php')
-      files += Dir.glob('wp-admin')
-      files += Dir.glob('wp-includes')
-
-      # but don't delete these
-      files -= %w( wp-config.php .htaccess robots.txt )
-      files -= Dir.glob('wp-content')
-      files -= Dir.glob('wp-images')
-
-      # but do delete these
-      files += Dir.glob('wp-content/themes/classic')
-      files += Dir.glob('wp-content/themes/default')
-      
-      # if they exist
-      files.select { |file| File.exist?(file) }
+      system 'ln', '-sf', file
     end
   end
 end

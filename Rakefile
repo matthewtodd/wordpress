@@ -18,6 +18,7 @@ spec = Gem::Specification.new do |spec|
   spec.homepage         = 'http://docs.matthewtodd.org/wordpress'
   
   spec.add_dependency     'capistrano', '>= 2.2.0'
+  spec.add_dependency     'wordpress-release'
 end
 
 Rake::GemReleaseTask.new(spec) do |task|

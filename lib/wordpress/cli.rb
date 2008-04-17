@@ -65,21 +65,20 @@ module Wordpress
           END
           
           file 'lighttpd.conf', <<-END
-            server.port = 3000
+            server.port              = 3000
             
             var.root                 = env.WORDPRESS_ROOT
             server.document-root     = var.root + "/public"
-            index-file.names         = ( "index.php" )
             server.error-handler-404 = "/index.php"
+            server.modules           = ( "mod_fastcgi" )
+            index-file.names         = ( "index.php" )
+            fastcgi.server           = ( ".php" => (( 
+                                           "bin-path" => env.PHP_FASTCGI,
+                                           "socket"   => var.root + "/tmp/sockets/php"
+                                       )))
 
             include "lighttpd-mimetypes.conf"
-            
-            server.modules = ( "mod_fastcgi" )
-            fastcgi.server = ( ".php" => (( 
-                                 "bin-path" => env.PHP_FASTCGI,
-                                 "socket"   => var.root + "/tmp/php.socket"
-                             )))
-            END
+          END
           
           file 'lighttpd-mimetypes.conf', <<-END
             mimetype.assign             = (

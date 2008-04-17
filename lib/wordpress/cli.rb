@@ -15,13 +15,11 @@ module Wordpress
   # plugins before deploying normally, {as
   # recommended}[http://codex.wordpress.org/Upgrading_WordPress_Extended].
   #
-  # Currently uses Wordpress 2.5.
-  #
   # ==Installation
   #  gem install wordpress --source http://gems.matthewtodd.org
   #
   # ==Usage
-  #  wordpress /path/to/your/app
+  #  wordpressify /path/to/your/app
   class Cli
     attr_reader :base
     

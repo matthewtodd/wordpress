@@ -1,24 +1,8 @@
 require 'digest/sha1'
 
 module Wordpress
-  # ==Introduction
-  # Creates a new Wordpress application with a default directory structure and
-  # configuration at the path specified.
-  #
-  # May also be used to upgrade an existing Wordpress application.
-  #
-  # Generally aims to be well-behaved, but it's still wise to upgrade locally
-  # using good version control (so you can, for example, <tt>git reset --hard
-  # && git clean -fd</tt>). After upgrading locally, it's best to deploy using
-  # <tt>deploy:upgrade</tt>, which will backup your database and disable your
-  # plugins before deploying normally, {as
-  # recommended}[http://codex.wordpress.org/Upgrading_WordPress_Extended].
-  #
-  # ==Installation
-  #  gem install wordpress --source http://gems.matthewtodd.org
-  #
-  # ==Usage
-  #  wordpressify /path/to/your/app
+  # Sets up a new project or upgrades the Wordpress installation in an
+  # existing project.
   class Cli
     attr_reader :base
     

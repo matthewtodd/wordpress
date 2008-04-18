@@ -1,1 +1,47 @@
-See Wordpress::Cli.
+Manages a Wordpress project Rails-ishly.
+
+* <tt>wordpressify</tt> sets up a new project and upgrades an existing one to the latest Wordpress.
+* <tt>cap deploy:setup</tt> and <tt>cap deploy</tt> do the right thing, handling <tt>wp-config.php</tt>.
+* <tt>cap deploy:upgrade</tt> additionally backs up your database and disables your plugins, {as recommended}[http://codex.wordpress.org/Upgrading_WordPress_Extended].
+* <tt>script/server</tt> fires up lighttpd for local development.
+
+
+==Getting Started
+
+ $ sudo gem install wordpress --source http://gems.matthewtodd.org
+ $ wordpressify blog   
+ $ cd blog
+ $ ls *
+ Capfile
+ 
+ config:
+ boot.rb              lighttpd-mimetypes.conf wp-config-sample.php
+ deploy.rb            lighttpd.conf           wp-config.php
+ 
+ public:
+ index.php            wp-config.php@          wp-rdf.php
+ license.txt          wp-content/             wp-register.php
+ readme.html          wp-cron.php             wp-rss.php
+ wp-admin/            wp-feed.php             wp-rss2.php
+ wp-app.php           wp-includes/            wp-settings.php
+ wp-atom.php          wp-links-opml.php       wp-trackback.php
+ wp-blog-header.php   wp-login.php            xmlrpc.php
+ wp-comments-post.php wp-mail.php
+ wp-commentsrss2.php  wp-pass.php
+ 
+ script:
+ server*
+ $
+
+==script/server
+
+ $ sudo port install lighttpd mysql5 +server php5 +fastcgi +mysql5
+ $ sudo launchctl load -w /Library/LaunchDaemons/org.macports.mysql5.plist
+ $ mysqladmin -u root create blog
+ $ script/server
+ 
+==Wordpress Releases
+
+This gem depends on <tt>wordpress-release</tt> for its copy of the Wordpress code.
+
+See http://docs.matthewtodd.org/wordpress-release for more -- the gem version number matches the bundled version of Wordpress.

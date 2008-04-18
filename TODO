@@ -1,4 +1,3 @@
-* TODO document installation of lighttpd, php5, mysql5 for script/server
 * TODO support copying "production" data into local database
 * TODO always overwrite wp-config-sample.php?
 * TODO wordpress cli could take arguments to pass in creating initial wp-config.php

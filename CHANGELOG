@@ -1,3 +1,7 @@
+== 0.5.0
+
+* <tt>wordpress/recipes/deploy</tt> should now be <tt>require</tt>d in your <tt>Capfile</tt>, not <tt>load</tt>ed. This seems more in keeping with Jamis' intentions for third-party libraries.
+
 == 0.4.0
 
 * Renamed <tt>wordpress</tt> -> <tt>wordpressify</tt>.

@@ -2,11 +2,11 @@
 # This file started as a direct copy of capistrano/recipes/deploy.
 # Thanks so much for Capistrano, Jamis!
 # =========================================================================
-Capistrano::Configuration.instance(:must_exist).load do
-  require 'yaml'
-  require 'capistrano/recipes/deploy/scm'
-  require 'capistrano/recipes/deploy/strategy'
+require 'yaml'
+require 'capistrano/recipes/deploy/scm'
+require 'capistrano/recipes/deploy/strategy'
 
+Capistrano::Configuration.instance(:must_exist).load do
   def _cset(name, *args, &block) #:nodoc:
     unless exists?(name)
       set(name, *args, &block)

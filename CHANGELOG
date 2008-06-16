@@ -1,3 +1,7 @@
+== 0.5.1
+
+* Quick Bugfix: Capfile still needs to require the wordpress gem.
+
 == 0.5.0
 
 * <tt>wordpress/recipes/deploy</tt> should now be <tt>require</tt>d in your <tt>Capfile</tt>, not <tt>load</tt>ed. This seems more in keeping with Jamis' intentions for third-party libraries.

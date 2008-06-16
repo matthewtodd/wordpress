@@ -6,5 +6,5 @@ end
 
 ENV['WORDPRESS_ROOT'] ||= WORDPRESS_ROOT
 ENV['PHP_FASTCGI']    ||= `which php-cgi`.strip
-Dir.mkdir(File.join(WORDPRESS_ROOT, 'tmp'))  unless File.exists?(File.join(WORDPRESS_ROOT, 'tmp'))
+Dir.mkdir(File.join(WORDPRESS_ROOT, 'tmp', 'sockets'))  unless File.exists?(File.join(WORDPRESS_ROOT, 'tmp', 'sockets'))
 exec 'lighttpd', '-D', '-f', File.join(WORDPRESS_ROOT, 'config', 'lighttpd.conf'), *ARGV

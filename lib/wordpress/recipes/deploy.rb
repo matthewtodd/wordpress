@@ -161,11 +161,14 @@ Capistrano::Configuration.instance(:must_exist).load do
       DESC
       task :config, :except => { :no_release => true } do
         require 'digest/sha1'
-        wp_config = Wordpress.config(:db_name     => database_name,
-                                     :db_user     => database_username,
-                                     :db_password => database_password,
-                                     :secret_key  => Digest::SHA1.hexdigest(rand.to_s),
-                                     :abspath     => '/../current/public/')
+        wp_config = Wordpress.config(:db_name         => database_name,
+                                     :db_user         => database_username,
+                                     :db_password     => database_password,
+                                     :auth_key        => Digest::SHA1.hexdigest(rand.to_s),
+                                     :secure_auth_key => Digest::SHA1.hexdigest(rand.to_s),
+                                     :logged_in_key   => Digest::SHA1.hexdigest(rand.to_s),
+                                     :nonce_key       => Digest::SHA1.hexdigest(rand.to_s),
+                                     :abspath         => '/../current/public/')
 
         put wp_config, "#{shared_path}/wp-config.php", :mode => 0600
       end

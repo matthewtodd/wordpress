@@ -27,22 +27,19 @@ module Wordpress
           END
 
           file 'deploy.rb', <<-END
-            set :application,       'set your application name here'
-            set :repository,        'set your repository location here'
+            set :application, 'set your application name here'
+
+            server 'your server here', :web, :user => 'your user here'
+
+            set :scm, :git
+            set :local_repository, "your server here:git/#{application}.git"
+            set :repository, "/path/to/repos/git/#{application}.git"
+            set :git_shallow_clone, 1
+
+            set :deploy_to, '/path/to/domains/your domain here/var/www'
+
             set :database_name,     'set your database name here'
             set :database_username, 'set your database username here'
-
-            # If you aren't deploying to /u/apps/\#{application} on the target
-            # servers (which is the default), you can specify the actual location
-            # via the :deploy_to variable:
-            # set :deploy_to, "/var/www/\#{application}"
-
-            # If you aren't using Subversion to manage your source code, specify
-            # your SCM below:
-            # set :scm, :git
-            # set :git_shallow_clone, 1
-
-            server 'your server here', :web, :app, :db, :primary => true
           END
 
           file 'lighttpd.conf', <<-END
@@ -119,11 +116,14 @@ module Wordpress
              )
           END
 
-          config = Wordpress.config(:db_name     => File.basename(base),
-                                    :db_user     => 'root',
-                                    :db_password => '',
-                                    :secret_key  => Digest::SHA1.hexdigest(rand.to_s),
-                                    :abspath     => '/../public/')
+          config = Wordpress.config(:db_name         => File.basename(base),
+                                    :db_user         => 'root',
+                                    :db_password     => '',
+                                    :auth_key        => Digest::SHA1.hexdigest(rand.to_s),
+                                    :secure_auth_key => Digest::SHA1.hexdigest(rand.to_s),
+                                    :logged_in_key   => Digest::SHA1.hexdigest(rand.to_s),
+                                    :nonce_key       => Digest::SHA1.hexdigest(rand.to_s),
+                                    :abspath         => '/../public/')
 
           file 'wp-config.php', config
           file 'wp-config-sample.php', config

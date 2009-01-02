@@ -1,3 +1,8 @@
+== 0.6.1
+
+* Update deploy:setup:config to write new secret keys introduced in Wordpress 2.6.
+* Update deploy.rb to match what I like to use.
+
 == 0.6.0
 
 * Slight documentation updates.

@@ -5,13 +5,15 @@ Manages a Wordpress project Rails-ishly.
 * <tt>cap deploy:upgrade</tt> additionally backs up your database and disables your plugins, {as recommended}[http://codex.wordpress.org/Upgrading_WordPress_Extended].
 * <tt>script/server</tt> fires up lighttpd for local development.
 
+==Installation
+
+ $ gem install capistrano
+ $ gem install matthewtodd-wordpress --source http://gems.github.com
 
 ==Getting Started
 
- $ sudo gem install wordpress --source http://gems.matthewtodd.org
  $ wordpressify blog
- $ cd blog
- $ ls *
+ $ ls blog/*
  Capfile
 
  config:
@@ -31,7 +33,6 @@ Manages a Wordpress project Rails-ishly.
 
  script:
  server*
- $
 
 ==script/server
 
@@ -42,6 +43,4 @@ Manages a Wordpress project Rails-ishly.
 
 ==Wordpress Releases
 
-This gem depends on <tt>wordpress-release</tt> for its copy of the Wordpress code.
-
-See http://docs.matthewtodd.org/wordpress-release for more -- the gem version number matches the bundled version of Wordpress.
+This gem depends on {matthewtodd-wordpress-release}[http://github.com/matthewtodd/wordpress-release] for its copy of the Wordpress code.

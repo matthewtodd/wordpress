@@ -2,7 +2,7 @@ Manages a Wordpress project Rails-ishly.
 
 * <tt>wordpressify</tt> sets up a new project and upgrades an existing one to the latest Wordpress.
 * <tt>cap deploy:setup</tt> and <tt>cap deploy</tt> do the right thing, handling <tt>wp-config.php</tt>.
-* <tt>cap deploy:upgrade</tt> additionally backs up your database and disables your plugins, {as recommended}[http://codex.wordpress.org/Upgrading_WordPress_Extended].
+* <tt>cap deploy:upgrade</tt> additionally backs up your database and disables your plugins, as recommended[http://codex.wordpress.org/Upgrading_WordPress_Extended].
 * <tt>script/server</tt> fires up lighttpd for local development.
 
 ==Installation
@@ -43,4 +43,4 @@ Manages a Wordpress project Rails-ishly.
 
 ==Wordpress Releases
 
-This gem depends on {matthewtodd-wordpress-release}[http://github.com/matthewtodd/wordpress-release] for its copy of the Wordpress code.
+This gem depends on wordpress-release[http://github.com/matthewtodd/wordpress-release] for its copy of the Wordpress code.

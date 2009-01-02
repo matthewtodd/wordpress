@@ -1,3 +1,8 @@
+== 0.6.0
+
+* Slight documentation updates.
+* Now using http://gems.github.com.
+
 == 0.5.1
 
 * Quick Bugfix: Capfile still needs to require the wordpress gem.

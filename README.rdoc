@@ -10,36 +10,14 @@ Manages a Wordpress project Rails-ishly.
  $ gem install capistrano
  $ gem install matthewtodd-wordpress --source http://gems.github.com
 
+ $ sudo port install lighttpd mysql5 +server php5 +fastcgi +mysql5
+ $ sudo launchctl load -w /Library/LaunchDaemons/org.macports.mysql5.plist
+
 ==Getting Started
 
  $ wordpressify blog
- $ ls blog/*
- Capfile
-
- config:
- boot.rb              lighttpd-mimetypes.conf wp-config-sample.php
- deploy.rb            lighttpd.conf           wp-config.php
-
- public:
- index.php            wp-config.php@          wp-rdf.php
- license.txt          wp-content/             wp-register.php
- readme.html          wp-cron.php             wp-rss.php
- wp-admin/            wp-feed.php             wp-rss2.php
- wp-app.php           wp-includes/            wp-settings.php
- wp-atom.php          wp-links-opml.php       wp-trackback.php
- wp-blog-header.php   wp-login.php            xmlrpc.php
- wp-comments-post.php wp-mail.php
- wp-commentsrss2.php  wp-pass.php
-
- script:
- server*
-
-==script/server
-
- $ sudo port install lighttpd mysql5 +server php5 +fastcgi +mysql5
- $ sudo launchctl load -w /Library/LaunchDaemons/org.macports.mysql5.plist
  $ mysqladmin -u root create blog
- $ script/server
+ $ cd blog && script/server
 
 ==Wordpress Releases
 

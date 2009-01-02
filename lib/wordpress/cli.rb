@@ -5,13 +5,13 @@ module Wordpress
   # existing project.
   class Cli
     attr_reader :base
-    
+
     def initialize(*argv)
       abort "Please specify the directory set up, e.g. #{File.basename($0)} ." if argv.empty?
       abort 'Too many arguments; please specify only the directory to set up.' if argv.length > 1
       @base = File.expand_path(argv.shift)
     end
-    
+
     def run
       directory(base) do
         file 'Capfile', <<-END
@@ -19,13 +19,13 @@ module Wordpress
           require 'wordpress/recipes/deploy'
           load 'config/deploy'
         END
-        
+
         directory('config') do
           file 'boot.rb', <<-END
             %w( rubygems wordpress ).each { |lib| require lib }
             WORDPRESS_ROOT = File.expand_path(File.join(File.dirname(__FILE__), '..'))
           END
-          
+
           file 'deploy.rb', <<-END
             set :application,       'set your application name here'
             set :repository,        'set your repository location here'
@@ -41,26 +41,26 @@ module Wordpress
             # your SCM below:
             # set :scm, :git
             # set :git_shallow_clone, 1
-            
+
             server 'your server here', :web, :app, :db, :primary => true
           END
-          
+
           file 'lighttpd.conf', <<-END
             server.port              = 3000
-            
+
             var.root                 = env.WORDPRESS_ROOT
             server.document-root     = var.root + "/public"
             server.error-handler-404 = "/index.php"
             server.modules           = ( "mod_fastcgi" )
             index-file.names         = ( "index.php" )
-            fastcgi.server           = ( ".php" => (( 
+            fastcgi.server           = ( ".php" => ((
                                            "bin-path" => env.PHP_FASTCGI,
                                            "socket"   => var.root + "/tmp/sockets/php"
                                        )))
 
             include "lighttpd-mimetypes.conf"
           END
-          
+
           file 'lighttpd-mimetypes.conf', <<-END
             mimetype.assign             = (
               ".pdf"          =>      "application/pdf",
@@ -118,7 +118,7 @@ module Wordpress
               ""              =>      "application/octet-stream",
              )
           END
-          
+
           config = Wordpress.config(:db_name     => File.basename(base),
                                     :db_user     => 'root',
                                     :db_password => '',
@@ -128,13 +128,13 @@ module Wordpress
           file 'wp-config.php', config
           file 'wp-config-sample.php', config
         end
-        
+
         directory('public') do
           Wordpress.release.upgrade
           system 'rm', 'wp-config-sample.php'
           symlink '../config/wp-config.php'
         end
-        
+
         directory('script') do
           file 'server', <<-END, :mode => 0755
             #!/usr/bin/env ruby
@@ -144,21 +144,21 @@ module Wordpress
         end
       end
     end
-    
+
     private
-    
+
     def directory(path)
       system 'mkdir', '-p', path
       Dir.chdir(path) { yield }
     end
-    
+
     def file(path, contents, options={})
       indent = contents.scan(/^ +/m).first
       contents.gsub! /^#{indent}/, ''
       File.open(path, 'w') { |f| f.write(contents) } unless File.exists?(path)
       File.chmod(options[:mode], path) if options[:mode]
     end
-    
+
     def symlink(file)
       system 'ln', '-sf', file
     end

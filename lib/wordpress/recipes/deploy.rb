@@ -145,7 +145,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         dirs += %w(backups uploads).map { |d| File.join(shared_path, d) }
         run "umask 02 && mkdir -p #{dirs.join(' ')}"
       end
-    
+
       desc <<-DESC
         [internal] Writes a script to restore a database backup.
       DESC
@@ -155,7 +155,7 @@ Capistrano::Configuration.instance(:must_exist).load do
           gzcat $1 | mysql -u #{database_username} -p #{database_name}
         END
       end
-    
+
       desc <<-DESC
         Creates a shared wp-config.php.
       DESC
@@ -203,14 +203,14 @@ Capistrano::Configuration.instance(:must_exist).load do
         symlink_shared_paths
         config
       end
-    
+
       desc <<-DESC
         [internal] Makes the release group writable, if desired.
       DESC
       task :chmod, :except => { :no_release => true } do
         run "chmod -fR g+w #{latest_release}" if fetch(:group_writable, true)
       end
-    
+
       desc <<-DESC
         [internal] Symlinks shared paths, like uploads, into the release.
       DESC
@@ -220,7 +220,7 @@ Capistrano::Configuration.instance(:must_exist).load do
           ln -s #{shared_path}/uploads #{latest_release}/public/wp-content/uploads
         CMD
       end
-    
+
       desc <<-DESC
         [internal] Symlinks the shared wp-config.php into the release.
       DESC
@@ -263,7 +263,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       desc <<-DESC
         Backup the database. This is HIGHLY recommended before upgrading \
         Wordpress.
-      
+
         Backups may be restored manually by running
           \#{shared_path}/backups/restore filename.sql.gz.
       DESC
@@ -271,14 +271,14 @@ Capistrano::Configuration.instance(:must_exist).load do
         run "mysqldump -u #{database_username} -p#{database_password} --compress --opt --lock-tables=false --skip-add-locks --skip-extended-insert #{database_name} | gzip > #{shared_path}/backups/#{release_name}.sql.gz"
       end
     end
-  
+
     namespace :plugins do
       desc 'Disable all plugins.'
       task :disable do
         run "mysql -u #{database_username} -p#{database_password} -e 'update wp_options set option_value=\"a:0:{}\" where option_name=\"active_plugins\"' #{database_name}"
       end
     end
-  
+
     desc 'Backup the database, disable all plugins, and deploy.'
     task :upgrade do
       database.backup
@@ -286,7 +286,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       deploy.default
       puts 'You should now visit wp-admin/upgrade.php and manually reactivate your plugins.'
     end
-  
+
     desc <<-DESC
       Clean up old releases. By default, the last 5 releases are kept on each \
       server (though you can change this with the keep_releases variable). All \

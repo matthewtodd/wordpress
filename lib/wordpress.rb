@@ -2,7 +2,7 @@ require 'wordpress/release'
 
 module Wordpress #:nodoc:
   VERSION = '0.5.1'
-  
+
   def self.config(options={})
     config = release.contents('wp-config-sample.php')
     options.each do |key, value|
@@ -12,7 +12,7 @@ module Wordpress #:nodoc:
     end
     config
   end
-  
+
   def self.release
     @@release ||= Release.new
   end

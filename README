@@ -9,15 +9,15 @@ Manages a Wordpress project Rails-ishly.
 ==Getting Started
 
  $ sudo gem install wordpress --source http://gems.matthewtodd.org
- $ wordpressify blog   
+ $ wordpressify blog
  $ cd blog
  $ ls *
  Capfile
- 
+
  config:
  boot.rb              lighttpd-mimetypes.conf wp-config-sample.php
  deploy.rb            lighttpd.conf           wp-config.php
- 
+
  public:
  index.php            wp-config.php@          wp-rdf.php
  license.txt          wp-content/             wp-register.php
@@ -28,7 +28,7 @@ Manages a Wordpress project Rails-ishly.
  wp-blog-header.php   wp-login.php            xmlrpc.php
  wp-comments-post.php wp-mail.php
  wp-commentsrss2.php  wp-pass.php
- 
+
  script:
  server*
  $
@@ -39,7 +39,7 @@ Manages a Wordpress project Rails-ishly.
  $ sudo launchctl load -w /Library/LaunchDaemons/org.macports.mysql5.plist
  $ mysqladmin -u root create blog
  $ script/server
- 
+
 ==Wordpress Releases
 
 This gem depends on <tt>wordpress-release</tt> for its copy of the Wordpress code.

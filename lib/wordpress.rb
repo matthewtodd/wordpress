@@ -1,7 +1,7 @@
 require 'wordpress/release'
 
 module Wordpress #:nodoc:
-  VERSION = '0.6.1'
+  VERSION = '0.6.2'
 
   def self.config(options={})
     config = release.contents('wp-config-sample.php')

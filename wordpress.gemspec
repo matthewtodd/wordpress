@@ -2,18 +2,18 @@
 
 Gem::Specification.new do |s|
   s.name = %q{wordpress}
-  s.version = "0.6.1"
+  s.version = "0.6.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matthew Todd"]
-  s.date = %q{2009-01-02}
+  s.date = %q{2009-01-21}
   s.default_executable = %q{wordpressify}
   s.email = %q{matthew.todd@gmail.com}
   s.executables = ["wordpressify"]
   s.extra_rdoc_files = ["CHANGELOG.rdoc", "README.rdoc", "TODO.rdoc"]
   s.files = ["CHANGELOG.rdoc", "README.rdoc", "TODO.rdoc", "bin/wordpressify", "lib/wordpress/cli.rb", "lib/wordpress/recipes/deploy.rb", "lib/wordpress/servers/lighttpd.rb", "lib/wordpress.rb"]
   s.has_rdoc = true
-  s.rdoc_options = ["--main", "README.rdoc", "--title", "wordpress-0.6.1", "--inline-source", "--line-numbers", "--all"]
+  s.rdoc_options = ["--main", "README.rdoc", "--title", "wordpress-0.6.2", "--inline-source", "--line-numbers", "--all"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{Automates creating, upgrading and deploying a Wordpress installation.}

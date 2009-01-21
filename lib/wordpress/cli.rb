@@ -32,8 +32,8 @@ module Wordpress
             server 'your server here', :web, :user => 'your user here'
 
             set :scm, :git
-            set :local_repository, "your server here:git/#{application}.git"
-            set :repository, "/path/to/repos/git/#{application}.git"
+            set :local_repository, "your server here:git/\#{application}.git"
+            set :repository, "/path/to/repos/git/\#{application}.git"
             set :git_shallow_clone, 1
 
             set :deploy_to, '/path/to/domains/your domain here/var/www'

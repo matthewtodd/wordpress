@@ -1,3 +1,13 @@
+== 0.7.0
+
+* Rather than copy-pasting Capistrano's deploy.rb, we just add some behavior in after hooks. (Excellent idea Michael Hale, http://gihub.com/mikehale.) So your Capfile will have to change to something like:
+
+  require 'rubygems'
+  require 'wordpress'
+  load 'deploy'
+  load 'deploy/wordpress'
+  load 'config/deploy'
+
 == 0.6.2
 
 * BUGFIX: escape string interpolation when setting up config/deploy.rb. (Thanks to Alex MacCaw, http://github.com/maccman)

@@ -15,8 +15,11 @@ module Wordpress
     def run
       directory(base) do
         file 'Capfile', <<-END
-          %w(rubygems wordpress).each { |lib| require lib }
-          require 'wordpress/recipes/deploy'
+          require 'rubygems'
+          require 'wordpress'
+
+          load 'deploy'
+          load 'deploy/wordpress'
           load 'config/deploy'
         END
 

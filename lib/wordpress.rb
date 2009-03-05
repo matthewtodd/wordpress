@@ -1,7 +1,7 @@
 require 'wordpress/release'
 
 module Wordpress #:nodoc:
-  VERSION = '0.6.2'
+  VERSION = '0.7.0'
 
   def self.config(options={})
     config = release.contents('wp-config-sample.php')
@@ -18,4 +18,5 @@ module Wordpress #:nodoc:
   end
 end
 
+require 'wordpress/capistrano'
 require 'wordpress/cli'

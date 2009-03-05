@@ -15,7 +15,7 @@ spec = Gem::Specification.new do |spec|
   spec.author           = 'Matthew Todd'
   spec.email            = 'matthew.todd@gmail.com'
 
-  spec.add_dependency     'capistrano', '>= 2.2.0'
+  spec.add_dependency     'capistrano', '>= 2.5.1'
   spec.add_dependency     'matthewtodd-wordpress-release'
 end
 
